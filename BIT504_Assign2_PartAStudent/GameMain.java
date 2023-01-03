@@ -4,9 +4,9 @@ import javax.swing.*;
 
 
 
-public class GameMain extends JPanel implements MouseListener{
+public class GameMain extends JPanel implements ActionListener, MouseListener{
 	//Constants for game 
-	// number of ROWS by COLS cell constants 
+	//number of ROWS by COLS cell constants 
 	public static final int ROWS = 3;     
 	public static final int COLS = 3;  
 	public static final String TITLE = "Tic Tac Toe";
@@ -40,7 +40,7 @@ public class GameMain extends JPanel implements MouseListener{
 	public GameMain() {   
 		
 		// TODO: This JPanel fires a MouseEvent on MouseClicked so add required event listener to 'this'.          
-	    
+	    addMouseListener(this);
 	    
 		// Setup the status bar (JLabel) to display status message       
 		statusBar = new JLabel("         ");       
@@ -57,10 +57,10 @@ public class GameMain extends JPanel implements MouseListener{
 		
 		
 		// TODO: Create a new instance of the game "Board"class. HINT check the variables above for the correct name
-
+		board = new Board();
 		
 		//TODO: call the method to initialise the game board
-
+		initGame();
 	}
 	
 	public static void main(String[] args) {
@@ -71,11 +71,12 @@ public class GameMain extends JPanel implements MouseListener{
 				JFrame frame = new JFrame(TITLE);
 				
 				//TODO: create the new GameMain panel and add it to the frame
-						
+				JPanel GameMain = new JPanel();
+				frame.add(new GameMain());
 				
 				
 				//TODO: set the default close operation of the frame to exit_on_close
-		            
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				
 				frame.pack();             
 				frame.setLocationRelativeTo(null);
@@ -94,24 +95,26 @@ public class GameMain extends JPanel implements MouseListener{
 		//set status bar message
 		if (currentState == GameState.Playing) {          
 			statusBar.setForeground(Color.BLACK);          
-			if (currentPlayer == Player.Cross) {   
+			if (currentPlayer == Player.Cross) {
 			
 				//TODO: use the status bar to display the message "X"'s Turn
-
+				statusBar.setText("X's turn");
 				
-			} else {    
+			}
+			else if (currentPlayer == Player.Nought) {    
 				
 				//TODO: use the status bar to display the message "O"'s Turn
-
+				statusBar.setText("O's turn");
 				
 			}       
-			} else if (currentState == GameState.Draw) {          
+			
+		} else if (currentState == GameState.Draw) {          
 				statusBar.setForeground(Color.RED);          
 				statusBar.setText("It's a Draw! Click to play again.");       
-			} else if (currentState == GameState.Cross_won) {          
+		} else if (currentState == GameState.Cross_won) {          
 				statusBar.setForeground(Color.RED);          
 				statusBar.setText("'X' Won! Click to play again.");       
-			} else if (currentState == GameState.Nought_won) {          
+		} else if (currentState == GameState.Nought_won) {          
 				statusBar.setForeground(Color.RED);          
 				statusBar.setText("'O' Won! Click to play again.");       
 			}
@@ -141,15 +144,23 @@ public class GameMain extends JPanel implements MouseListener{
 			if(board.hasWon(thePlayer, row, col)) {
 				
 				// TODO: check which player has won and update the currentstate to the appropriate gamestate for the winner
-
+				if(thePlayer == Player.Cross) {
+					currentState = GameState.Cross_won;
+				}
+				
+				if(thePlayer == Player.Nought) {
+					currentState = GameState.Nought_won;
+				}
 				
 			} else 
 				if (board.isDraw ()) {
 					
-				// TODO: set the currentstate to the draw gamestate
-
+					// TODO: set the currentstate to the draw gamestate
+					currentState = GameState.Draw;
 			}
+				else
 			//otherwise no change to current state of playing
+			currentState = GameState.Playing;
 		}
 		
 				
@@ -185,7 +196,7 @@ public class GameMain extends JPanel implements MouseListener{
 		}   
 		
 		//TODO: redraw the graphics on the UI          
-           
+		repaint();
 	}
 		
 	
@@ -208,6 +219,12 @@ public class GameMain extends JPanel implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// Auto-generated, event not used
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		repaint();
 	}
 
 }
